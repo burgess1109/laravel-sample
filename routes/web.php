@@ -16,10 +16,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('currency', 'Currency\ListAction');
-Route::get('currency/{id}', 'Currency\ShowAction');
-Route::post('currency', 'Currency\StoreAction');
-Route::patch('currency/{id}', 'Currency\UpdateAction');
-Route::delete('currency/{id}', 'Currency\DeleteAction');
-
