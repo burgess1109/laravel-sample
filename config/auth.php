@@ -108,4 +108,8 @@ return [
 
     'password_timeout' => 10800,
 
+    'jwt' => [
+        'expiration_time' => env('JWT_EXPIRATION_TIME', '+60 minute'),
+        'alg' => env('JWT_ALG', 'HS256'),
+    ]
 ];

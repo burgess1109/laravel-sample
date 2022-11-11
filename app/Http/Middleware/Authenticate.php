@@ -2,20 +2,45 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use App\Services\SampleJWT;
+use Closure;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
+use Psr\Log\LoggerInterface;
 
-class Authenticate extends Middleware
+class Authenticate
 {
-    /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string|null
-     */
-    protected function redirectTo($request)
+    private SampleJWT $sampleJWT;
+    private LoggerInterface $logger;
+
+    public function __construct(SampleJWT $sampleJWT, LoggerInterface $logger)
     {
-        if (! $request->expectsJson()) {
-            return route('login');
+        $this->sampleJWT = $sampleJWT;
+        $this->logger = $logger;
+    }
+
+    public function handle(Request $request, Closure $next)
+    {
+        $token = $request->bearerToken();
+        if (empty($token)) {
+            throw new AuthenticationException('token not found');
         }
+
+        try {
+            $payload = $this->sampleJWT->decode($token);
+        } catch (\Throwable $exception) {
+            $this->logger->error('jwt decode failed: ' . $exception->getMessage());
+            throw new AuthenticationException('token error');
+        }
+
+        $user = Redis::get($payload->jti);
+        if (empty($user)) {
+            $this->logger->error('no jti in redis: ' . $payload->jti);
+            throw new AuthenticationException('login failed');
+        }
+
+        $request->attributes->set('jti', $payload->jti);
+        return $next($request);
     }
 }

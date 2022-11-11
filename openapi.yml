@@ -1,0 +1,492 @@
+openapi: 3.0.3
+info:
+  title: Laravel Sample API
+  version: "1.0"
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Auth
+    description: login/logout/refresh
+  - name: Roles
+    description: CRUD Roles
+  - name: Users
+    description: CRUD Users
+paths:
+  /api/login:
+    post:
+      tags:
+        - Auth
+      description: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - account
+                - password
+              properties:
+                account:
+                  $ref: '#/components/schemas/account'
+                password:
+                  $ref: '#/components/schemas/password'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    $ref: '#/components/schemas/token'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+  /api/logout:
+    post:
+      tags:
+        - Auth
+      description: User logout
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    example: true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+  /api/refresh:
+    post:
+      tags:
+        - Auth
+      description: Refresh JWT
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    $ref: '#/components/schemas/token'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+
+  /api/roles:
+    get:
+      tags:
+        - Roles
+      description: Get all roles
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/roleId'
+                    name:
+                      $ref: '#/components/schemas/roleName'
+                    note:
+                      $ref: '#/components/schemas/roleNote'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+    post:
+      tags:
+        - Roles
+      description: Create a role
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  $ref: '#/components/schemas/roleName'
+                note:
+                  $ref: '#/components/schemas/roleNote'
+                permissionIds:
+                  $ref: '#/components/schemas/permissionIds'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/role'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+  /api/roles/{id}:
+    get:
+      tags:
+        - Roles
+      description: Get a specific role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/role'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+    patch:
+      tags:
+        - Roles
+      description: Update a specific role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/roleName'
+                note:
+                  $ref: '#/components/schemas/roleNote'
+                permissionIds:
+                  $ref: '#/components/schemas/permissionIds'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/role'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+    delete:
+      tags:
+        - Roles
+      description: Delete a specific role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    example: true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+
+  /api/users:
+    get:
+      tags:
+        - Users
+      description: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/userId'
+                    account:
+                      $ref: '#/components/schemas/userAccount'
+                    email:
+                      $ref: '#/components/schemas/email'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+    post:
+      tags:
+        - Users
+      description: Create a role
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - account
+                - password
+              properties:
+                account:
+                  $ref: '#/components/schemas/userAccount'
+                password:
+                  $ref: '#/components/schemas/userPassword'
+                email:
+                  $ref: '#/components/schemas/email'
+                roleId:
+                  $ref: '#/components/schemas/roleId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+  /api/users/{id}:
+    get:
+      tags:
+        - Users
+      description: Get a specific role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+    patch:
+      tags:
+        - Users
+      description: Update a specific role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  $ref: '#/components/schemas/userPassword'
+                email:
+                  $ref: '#/components/schemas/email'
+                roleId:
+                  $ref: '#/components/schemas/roleId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+    delete:
+      tags:
+        - Users
+      description: Delete a specific role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    example: true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponses'
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    ApiLang:
+      name: ApiLang
+      in: query
+      description: API language, using `lang` is accepted too
+      schema:
+        type: string
+        enum:
+          - zh-CN
+          - zh-TW
+          - en-US
+        default: zh-CN
+  schemas:
+    account:
+      type: string
+      description: user account
+      example: "user01"
+    password:
+      type: string
+      description: user password
+      example: "test"
+    token:
+      type: string
+      description: JWT
+      example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwNmE3YWMyZS1hOGQ2LTQ2ZTktYjE2Yi1hNDU5ZjhmN2RkNmQiLCJpc3MiOiJsYXJhdmVsLXNhbXBsZSIsImF1ZCI6ImxhcmF2ZWwtc2FtcGxlIiwiaWF0IjoxNjY0MzUzMjQ5LCJuYmYiOjE2NjQzNTMyNDksImV4cCI6MTY2NDM1NTA0OX0.ixfcCfOlCgIRywCTP5RnWjQTUrb0VUGTgq1a7nRGjOo"
+    role:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/roleId'
+        name:
+          $ref: '#/components/schemas/roleName'
+        note:
+          $ref: '#/components/schemas/roleNote'
+        permissionIds:
+          $ref: '#/components/schemas/permissionIds'
+    roleId:
+      type: integer
+      example: 1
+    roleName:
+      type: string
+      example: 'admin'
+    roleNote:
+      type: string
+      example: 'This is a role for admin'
+    permissionIds:
+      type: array
+      description: The permissions of this role
+      items:
+        type: integer
+        example: 1
+    userId:
+      type: integer
+      example: 1
+    userAccount:
+      type: string
+      example: 'user'
+    userPassword:
+      type: string
+      example: 'password'
+    email:
+      type: string
+      example: 'test@abc.com'
+    user:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/userId'
+        account:
+          $ref: '#/components/schemas/userAccount'
+        email:
+          $ref: '#/components/schemas/email'
+        roleId:
+          $ref: '#/components/schemas/roleId'
+    errorResponses:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+              description: Error code
+              example: 1
+            message:
+              type: string
+              description: Error message
+              example: somthing error

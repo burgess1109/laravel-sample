@@ -5,7 +5,7 @@ namespace App\Http\Requests\Roles;
 use App\Services\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShowRequest extends FormRequest
+class DestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class ShowRequest extends FormRequest
      */
     public function authorize(Permission $permission)
     {
-        return $permission->can('role', 'read');
+        return $permission->can('role', 'delete');
     }
 
     /**
@@ -26,14 +26,14 @@ class ShowRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'integer']
+            'id' => ['required', 'integer', 'exists:roles,id']
         ];
     }
 
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['id'] = $this->route('id');
+        $data['id'] = (int)$this->route('id');
         return $data;
     }
 }

@@ -1,46 +1,51 @@
-# Currency Exchange Rate
+# Laravel Sample
+
+This is a personal practice project
+
+- Using JWT to authenticate users
+- Role-based access control (RBAC)
+- Providing CRUD RESTful API for users and roles 
+
+## Version
+
+- Laravel 9.x
+- PHP 8.0
+- Maria DB 10.7
+- Redis 7.0
 
 ## Local Development
 
-- 下載專案
-
+- Download
     `git clone git@github.com:burgess1109/laravel-sample.git`
 
-- cp .env.example .env
-
-    可調整 `DB_DATABASE` 、 `DB_USERNAME` 、 `DB_PASSWORD`
-
-- 安裝 images & run containers
-
+- Copy .env.example to .env
+- Install images & run containers
     `docker-composer up -d`
 
-- 安裝 php 套件
-
+- Install php libraries
     `docker-compose exec php-fpm composer install`
 
 - Generate APP_KEY
-
     `docker-compose exec php-fpm php artisan key:generate`
 
 - DB initialization
-
     `docker-compose exec php-fpm php artisan migrate:fresh --seed`
 
-- 設定完成至 http://localhost:8080 可看到 Laravel 頁面
+- Open http://localhost:8080. You would see the Laravel home page if everything work fine.
 
-## 其他指令
+## Testing
 
 - PSR-12 lint
 
     `docker-compose exec php-fpm ./vendor/bin/phpcs ./`
 
-- run test
+- Feature/Unit testing
 
     `docker-compose exec php-fpm php artisan test`
 
-## API 規格
+## API Spec
 
 ![Demo](./demo.png)
 
-詳細規格請參考 [openapi.yml](./openapi.yml)
+Refer to [openapi.yml](./openapi.yml) to get more information
  

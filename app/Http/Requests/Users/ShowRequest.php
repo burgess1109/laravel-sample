@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Roles;
+namespace App\Http\Requests\Users;
 
 use App\Services\Permission;
 use Illuminate\Foundation\Http\FormRequest;
@@ -15,7 +15,7 @@ class ShowRequest extends FormRequest
      */
     public function authorize(Permission $permission)
     {
-        return $permission->can('role', 'read');
+        return $permission->can('user', 'read');
     }
 
     /**

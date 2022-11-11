@@ -57,8 +57,9 @@ class UserRoleSeeder extends Seeder
             ],
         ];
 
-        foreach ($users as $user) {
+        foreach ($users as $key => $user) {
             $role = Role::create([
+                'id' => $key + 1,
                 'name' => $user['role']['name'],
                 'note' => $user['role']['note']
             ]);
